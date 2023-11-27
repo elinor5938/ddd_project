@@ -39,7 +39,7 @@ filter_list = ["BLI_", "LCI_", "WLI_"]
 #
 #                         old_filepath = os.path.join(root, filename)
 #                         new_filepath = os.path.join(root, new_filename)
-#                         #os.rename(old_filepath, new_filepath)
+#                         #os.rename(old_filepath, new_filepath)git config [--global] user.name "Full Name"
 #                         print(f"Renamed: {old_filepath} -> {new_filepath}")
 #
 #         print("Renaming completed.")
