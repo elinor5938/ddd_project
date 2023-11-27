@@ -56,7 +56,10 @@ def rename_images_with_prefix(path):
     try:
         for root, dirs, files in os.walk(path):
             # Get the last two folder names from the current subdirectory
-            folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
+            if "מטופלים מוכנים" in root :
+                folder_names = os.path.normpath(root).split(os.path.sep)[-2:]
+            else:
+                folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
             prefix = '_'.join(folder_names)
             prefix = prefix.upper()
             patient_id = folder_names[0]
@@ -69,7 +72,7 @@ def rename_images_with_prefix(path):
                         digit = patient_zoom_match.group(1)
                         if digit.isdigit():
                             # Extract the letter from the folder name
-                            patient_new_zoom_match = re.search(r'ZOOM ([a-zA-Z])', root)
+                            patient_new_zoom_match = re.search(r'(?i)ZOOM ([a-zA-Z])', root)
                             if patient_new_zoom_match:
                                 letter = patient_new_zoom_match.group(1)
                                 new_zoom = f'ZOOM {letter}'
@@ -95,7 +98,7 @@ def rename_images_with_prefix(path):
                             new_filename = f"{prefix}_{filename}"
                             old_filepath = os.path.join(root, filename)
                             new_filepath = os.path.join(root, new_filename)
-                            #os.rename(old_filepath, new_filepath)
+                            os.rename(old_filepath, new_filepath)
                             print(f"Renamed: {old_filepath} -> {new_filepath}")
                     else:
                         new_filename = f"{prefix}_{filename}"
@@ -109,8 +112,8 @@ def rename_images_with_prefix(path):
         print(f"An error occurred: {e}")
 
 
-
-path="U:/AI Tumor Margin project/Data_Doc_new/EX_VIVO/esophagus/SCC/AM5268/"
+path="U:/מטופלים מוכנים/"
+rename_images_with_prefix(path)
 
 
 def rename_images_with_prefix_ex(path):
