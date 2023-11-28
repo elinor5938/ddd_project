@@ -6,7 +6,7 @@ from PIL import Image
 
 # Define the root folder path
 #root_folder = r'U:/AI Tumor Margin project/Data_Doc_new/IN_VIVO/'
-root_folder="U:/AI Tumor Margin project/Data_Doc_new/EX_VIVO/"
+root_folder="U:/AI Tumor Margin project/Data_Doc_new/IN_VIVO/" ########################## the modt updated folder path #######################################
 
 # Define a list of image file extensions to consider
 image_extensions = ['.png', '.jpg', '.tif',".jpeg",".JPG",".PNG",".TIF",".JPEG",".BMP",".bmp"]
@@ -34,11 +34,13 @@ Tumor_budding=[]
 layer=[]
 deapth_micrometer=[]
 other=[]
+user=[]
+Computer_tag=[]
 # Check if the CSV file already exists
-if os.path.exists("NO_DF__.csv"):
+if os.path.exists("28_11.csv"): ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
     # Load the existing DataFrame from the CSV file
     try:
-        existing_df = pd.read_csv("NO_DF__.csv.", encoding='latin-1')
+        existing_df = pd.read_csv("28_11.csv", encoding='latin-1')
     except Exception as e:
         print(f"An error occurred: {e}")
 else:
@@ -50,7 +52,7 @@ for root, dirs, files in os.walk(root_folder):
         if filename.endswith(tuple(image_extensions)):
             img_name = filename
             if img_name in  existing_df['img_name'].values:
-               print("Image ecxists !!!!!")
+               #print("Image ecxists !!!!!")
                continue
             else:
             # Extract information from the directory structure
@@ -64,12 +66,13 @@ for root, dirs, files in os.walk(root_folder):
                 # Calculate the total number of pixels
                 total_pixels = str(width) + "," + str(height)
                 folder_parts = root.split(os.path.sep)
+
                 if "EX VIVO" in folder_parts or "TBD" in folder_parts or "color" in folder_parts or "Normal Tissue" in folder_parts or "Not Relevant" in folder_parts or "חיתוך" in folder_parts or "tbd" in folder_parts or "To be deleted" in folder_parts or "To be delete" in folder_parts or "Surgery" in folder_parts:
                     continue
+
                 else:
 
                     indication_match = re.search(r"(?i)(Colon|Esophagus|Stomach)", root)
-
                     indication = indication_match.group() if indication_match else None
                     filter_match= re.search(r'(?i)(BLI|WLI|LCI)', root)
                     filter_type = filter_match.group() if filter_match else None
@@ -102,6 +105,8 @@ for root, dirs, files in os.walk(root_folder):
                     Tumor_budding.append(None)
                     layer.append(None)
                     other.append(None)
+                    user.append(None)
+                    Computer_tag.append(None)
                     pixles.append(total_pixels)
                     type.append(filename[-3:])
                     img_names.append(img_name)
@@ -131,11 +136,13 @@ data = {
     "Healthy/Other":comments,
     'Tumor budding':Tumor_budding,
     "Stage":stage,
-    "other":other
+    "other":other,
+"Computer tag":Computer_tag,
+    "User":user
 }
 
 # Combine the new data with the existing DataFrame
-if os.path.exists("NO_DF__.csv"):
+if os.path.exists("28_11.csv"):  ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
     combined_df = pd.concat([existing_df, pd.DataFrame(data)], ignore_index=True)
 else:
     combined_df = pd.DataFrame(data)
@@ -143,8 +150,15 @@ else:
 # Save the combined DataFrame to the CSV file
 combined_df=combined_df[['Patient_Code', 'Indication', 'Tumor_Type', 'img_name',
        'Patient_ID', 'Patient_Name', 'Age', 'Gender', 'ZOOM', 'GRADE',
-       'Grade_In_Numbers', 'Stage', 'LVI', 'DEEP\ SUPERFICIAL', 'pixels',
+       'Grade_In_Numbers', 'Stage', 'LVI', 'DEEP\ SUPERFICIAL','TISSIU LAYER INVASION','Depth_of_invasion (MICROMETER)','pixels',
        'format', 'Filter', 'Healthy/Other',
        'Tumor budding']]
-combined_df.to_csv("EX_vivo_new.csv", index=False)
+print(existing_df["Patient_Code"].nunique()) # old n
+print(combined_df["Patient_Code"].nunique()) # new n
+print(combined_df["Patient_Code"].unique()) # new n
+new_df=pd.DataFrame(data)
+print(new_df["Patient_Code"].unique()) # new n
+[ i for i in new_df["Patient_Code"].unique() if i not in existing_df["Patient_Code"].unique() ]
+combined_df.to_csv("NEW_COMBINED_DF.csv", index=False) ########################### created new df  ###############################
+
 

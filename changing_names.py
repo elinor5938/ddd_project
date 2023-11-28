@@ -65,54 +65,55 @@ def rename_images_with_prefix(path):
             patient_id = folder_names[0]
 
             for filename in files:
-                # Check if the file is an image (you can customize this condition)
-                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp',".JPG",".PNG",".TIF",".JPEG")):
-                    patient_zoom_match = re.search(r'(?i)ZOOM (/d+)', filename)
-                    if patient_zoom_match:
-                        digit = patient_zoom_match.group(1)
-                        if digit.isdigit():
-                            # Extract the letter from the folder name
-                            patient_new_zoom_match = re.search(r'(?i)ZOOM ([a-zA-Z])', root)
-                            if patient_new_zoom_match:
-                                letter = patient_new_zoom_match.group(1)
-                                new_zoom = f'ZOOM {letter}'
-                                new_filename = filename.replace(f'ZOOM {digit}', new_zoom)
-                                new_filepath = os.path.join(root, new_filename)
-                                old_filepath = os.path.join(root, filename)
+              #  if filename.startswith("snapshot"):
+                    # Check if the file is an image (you can customize this condition)
+                    if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp',".JPG",".PNG",".TIF",".JPEG")):
+                        patient_zoom_match = re.search(r'(?i)ZOOM (/d+)', filename)
+                        if patient_zoom_match:
+                            digit = patient_zoom_match.group(1)
+                            if digit.isdigit():
+                                # Extract the letter from the folder name
+                                patient_new_zoom_match = re.search(r'(?i)ZOOM ([a-zA-Z])', root)
+                                if patient_new_zoom_match:
+                                    letter = patient_new_zoom_match.group(1)
+                                    new_zoom = f'ZOOM {letter}'
+                                    new_filename = filename.replace(f'ZOOM {digit}', new_zoom)
+                                    new_filepath = os.path.join(root, new_filename)
+                                    old_filepath = os.path.join(root, filename)
 
-                                print(f"Renamed: {filename} -> {new_filename}")
+                                    print(f"Renamed: {filename} -> {new_filename}")
 
-                                os.rename(old_filepath, new_filepath)
+                                    os.rename(old_filepath, new_filepath)
+                                else:
+                                    print(f"Warning: No letter found in folder name for '{filename}' in '{root}'")
                             else:
-                                print(f"Warning: No letter found in folder name for '{filename}' in '{root}'")
-                        else:
-                            print(f"Warning: No digit found after 'zoom' in filename '{filename}' in '{root}'")
-                    elif "ZOOM" not in filename: # cases where zoom was not in the file name but was added later
-                        if "ZOOM" in root:
-                             new_filename = f"{prefix}_{filename}"
-                             old_filepath = os.path.join(root, filename)
-                             new_filepath = os.path.join(root, new_filename)
-                             os.rename(old_filepath, new_filepath)
-                             print(f"Renamed: {old_filepath} -> {new_filepath}")
+                                print(f"Warning: No digit found after 'zoom' in filename '{filename}' in '{root}'")
+                        elif "ZOOM" not in filename: # cases where zoom was not in the file name but was added later
+                            if "ZOOM" in root:
+                                 new_filename = f"{prefix}_{filename}"
+                                 old_filepath = os.path.join(root, filename)
+                                 new_filepath = os.path.join(root, new_filename)
+                                 os.rename(old_filepath, new_filepath)
+                                 print(f"Renamed: {old_filepath} -> {new_filepath}")
+                            else:
+                                new_filename = f"{prefix}_{filename}"
+                                old_filepath = os.path.join(root, filename)
+                                new_filepath = os.path.join(root, new_filename)
+                                os.rename(old_filepath, new_filepath)
+                                print(f"Renamed: {old_filepath} -> {new_filepath}")
                         else:
                             new_filename = f"{prefix}_{filename}"
                             old_filepath = os.path.join(root, filename)
                             new_filepath = os.path.join(root, new_filename)
                             os.rename(old_filepath, new_filepath)
                             print(f"Renamed: {old_filepath} -> {new_filepath}")
-                    else:
-                        new_filename = f"{prefix}_{filename}"
-                        old_filepath = os.path.join(root, filename)
-                        new_filepath = os.path.join(root, new_filename)
-                        os.rename(old_filepath, new_filepath)
-                        print(f"Renamed: {old_filepath} -> {new_filepath}")
 
-        print("Renaming completed.")
+            print("Renaming completed.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")
 
 
-path="U:/מטופלים מוכנים/"
+path="U:/AI Tumor Margin project/Data_Doc_new/IN_VIVO/Tumor_Types/media/Esophagus/Adenocarcinoma/DA1225/"
 rename_images_with_prefix(path)
 
 
