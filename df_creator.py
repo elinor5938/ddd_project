@@ -37,10 +37,10 @@ other=[]
 user=[]
 Computer_tag=[]
 # Check if the CSV file already exists
-if os.path.exists("28_11.csv"): ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
+if os.path.exists("28_11_newest.csv"): ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
     # Load the existing DataFrame from the CSV file
     try:
-        existing_df = pd.read_csv("28_11.csv", encoding='latin-1')
+        existing_df = pd.read_csv("28_11_newest.csv", encoding='latin-1')
     except Exception as e:
         print(f"An error occurred: {e}")
 else:
@@ -136,13 +136,13 @@ data = {
     "Healthy/Other":comments,
     'Tumor budding':Tumor_budding,
     "Stage":stage,
-    "other":other,
+    "comment":other,
 "Computer tag":Computer_tag,
     "User":user
 }
 
 # Combine the new data with the existing DataFrame
-if os.path.exists("28_11.csv"):  ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
+if os.path.exists("28_11_newest.csv"):  ########################### PUT OLD DF DOWNLOADED FROM TEAMS ###############################
     combined_df = pd.concat([existing_df, pd.DataFrame(data)], ignore_index=True)
 else:
     combined_df = pd.DataFrame(data)
@@ -151,8 +151,9 @@ else:
 combined_df=combined_df[['Patient_Code', 'Indication', 'Tumor_Type', 'img_name',
        'Patient_ID', 'Patient_Name', 'Age', 'Gender', 'ZOOM', 'GRADE',
        'Grade_In_Numbers', 'Stage', 'LVI', 'DEEP\ SUPERFICIAL','TISSIU LAYER INVASION','Depth_of_invasion (MICROMETER)','pixels',
-       'format', 'Filter', 'Healthy/Other',
+       'format', 'Filter', 'Healthy/Other',"comment","Computer tag","User",
        'Tumor budding']]
+existing_df.columns
 print(existing_df["Patient_Code"].nunique()) # old n
 print(combined_df["Patient_Code"].nunique()) # new n
 print(combined_df["Patient_Code"].unique()) # new n
@@ -161,4 +162,4 @@ print(new_df["Patient_Code"].unique()) # new n
 [ i for i in new_df["Patient_Code"].unique() if i not in existing_df["Patient_Code"].unique() ]
 combined_df.to_csv("NEW_COMBINED_DF.csv", index=False) ########################### created new df  ###############################
 
-
+combined_df.columns
