@@ -52,14 +52,15 @@ import re
 filter_list = ["BLI_", "LCI_", "WLI_"]
 
 # Function to rename image files
+# Function to rename image files
 def rename_images_with_prefix(path):
     try:
         for root, dirs, files in os.walk(path):
             # Get the last two folder names from the current subdirectory
-            if "מטופלים מוכנים" in root :
+            folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
+            #else:
+            if "מטופלים מוכנים" in folder_names :
                 folder_names = os.path.normpath(root).split(os.path.sep)[-2:]
-            else:
-                folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
             prefix = '_'.join(folder_names)
             prefix = prefix.upper()
             patient_id = folder_names[0]
@@ -67,7 +68,7 @@ def rename_images_with_prefix(path):
             for filename in files:
               #  if filename.startswith("snapshot"):
                     # Check if the file is an image (you can customize this condition)
-                    if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp',".JPG",".PNG",".TIF",".JPEG")):
+                    if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp',".JPG",".PNG",".TIF",".JPEG",".tif")):
                         patient_zoom_match = re.search(r'(?i)ZOOM (/d+)', filename)
                         if patient_zoom_match:
                             digit = patient_zoom_match.group(1)
@@ -113,7 +114,8 @@ def rename_images_with_prefix(path):
             print(f"An error occurred: {e}")
 
 
-path="U:/AI Tumor Margin project/Data_Doc_new/IN_VIVO/Tumor_Types/media/Esophagus/Adenocarcinoma/DA1225/"
+
+path="U:/מטופלים מוכנים/"
 rename_images_with_prefix(path)
 
 
@@ -133,7 +135,7 @@ def rename_images_with_prefix_ex(path):
             for filename in files:
                 # Check if the file is an image (you can customize this condition)
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp',".JPG",".PNG",".TIF",".JPEG")):
-                    patient_zoom_match = re.search(r'(?i)ZOOM (\d+)', filename)
+                    patient_zoom_match = re.search(r'(?i)ZOOM (/d+)', filename)
                     if patient_zoom_match:
                         digit = patient_zoom_match.group(1)
                         if digit.isdigit():
@@ -179,37 +181,39 @@ def rename_images_with_prefix_ex(path):
 #path="U:/AI Tumor Margin project/Data_Doc_new/EX_VIVO/"
 #rename_images_with_prefix(path)
 
-
 rename_images_with_prefix_ex(path)
 # Specify the path to the directory containing the images
-#directory_path = r'U:/מטופלים מוכנים/'
+directory_path = r'U:/מטופלים מוכנים/KA2698/'
+
+def remove_heabrew_string(path):
+    for root, dirs, files in os.walk(path):
+        # Get the last two folder names from the current subdirectory
+        folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
+        prefix = '_'.join(folder_names)
+        prefix = prefix.upper()
+        patient_id = folder_names[0]
+
+        for filename in files:
+            # Check if the file is an image (you can customize this condition)
+            if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp', ".JPG", ".PNG", ".TIF", ".JPEG")):
+                ready_match = re.search(r'מטופלים מוכנים_', filename)
+                if ready_match:
+                    # Extract the matched string
+                    ready_string = ready_match.group(0)
+
+                    # Remove the matched string from the filename
+                    new_filename = re.sub(re.escape(ready_string), '', filename)
+
+                    # Optionally, you can rename the file
+                    old_path = os.path.join(root, filename)
+                    new_path = os.path.join(root, new_filename)
+                    os.rename(old_path, new_path)
+
+                     # Print for verification (you can remove this in the final version)
+                     print(f"Renamed: {filename} -> {new_filename}")
+
+remove_heabrew_string(directory_path)
+# crea
 
 
-# def remove_heabrew_string(path):
-#     for root, dirs, files in os.walk(path):
-#         # Get the last two folder names from the current subdirectory
-#         folder_names = os.path.normpath(root).split(os.path.sep)[-3:]
-#         prefix = '_'.join(folder_names)
-#         prefix = prefix.upper()
-#         patient_id = folder_names[0]
-#
-#         for filename in files:
-#             # Check if the file is an image (you can customize this condition)
-#             if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', 'bmp', ".JPG", ".PNG", ".TIF", ".JPEG")):
-#                 ready_match = re.search(r'מטופלים מוכנים_', filename)
-#                 if ready_match:
-#                     # Extract the matched string
-#                     ready_string = ready_match.group(0)
-#
-#                     # Remove the matched string from the filename
-#                     new_filename = re.sub(re.escape(ready_string), '', filename)
-#
-#                     # Optionally, you can rename the file
-#                     old_path = os.path.join(root, filename)
-#                     new_path = os.path.join(root, new_filename)
-#                     os.rename(old_path, new_path)
-#
-#                     # Print for verification (you can remove this in the final version)
-#                     print(f"Renamed: {filename} -> {new_filename}")
 
-#remove_heabrew_string(directory_path)
